@@ -5,8 +5,8 @@ mvEEG package (mvEEG.Classifier, mvEEG.Crossnobis); trial averaging uses mvEEG.W
 """
 import numpy as np
 from sklearn.model_selection import train_test_split
-import mvEEG
 import config as C
+import mvEEG
 
 LEVEL = {"high": 0, "low": 1}                     # class indices
 

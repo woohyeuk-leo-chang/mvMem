@@ -102,7 +102,7 @@ arrow(s1 + TW + 0.8, 26.1, s1 + TW + 4.6, 26.1)
 vals = np.random.default_rng(7).uniform(.15, .9, 11)
 for k, v in enumerate(vals):
     A.add_patch(Rectangle((s1 + TW + 5.6, 12.4 + k * 2.5), 3.0, 2.5, fc=str(round(1 - v * .85, 2)), ec="white", lw=0.3, zorder=3))
-txt(s1 + TW + 7.1, 42.6, "30 channels", PT["tick"])
+txt(s1 + TW + 7.1, 42.6, "28 channels", PT["tick"])
 # stage 2: independent item labels -> train classifier
 s2 = DX + 36.0; cx2 = s2 + 14.5
 A.add_patch(FancyBboxPatch((cx2 - 13.0, TY - 3.2), 26.0, 7.6, boxstyle="round,pad=0,rounding_size=1.2", fc="0.94", ec="none", zorder=1))

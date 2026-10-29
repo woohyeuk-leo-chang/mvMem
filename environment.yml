@@ -13,9 +13,9 @@ dependencies:
   - mne=1.8
   - mne-bids=0.16
   - pip
-  - pip:
-      - -e ../mvEEG             # decoding / crossnobis package; replace with its public URL before release
-      # only for 1_generate/ann_features.py (ANN feature extraction):
-      # - torch
-      # - thingsvision
-      # - resmem
+  # decoding.py / rsa.py also need mvEEG (https://github.com/AwhVogelLab/mvEEG); see README
+  # only for 1_generate/ann_features.py (ANN feature extraction):
+  # - pip:
+  #     - torch
+  #     - thingsvision
+  #     - resmem

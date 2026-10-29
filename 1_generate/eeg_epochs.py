@@ -2,7 +2,8 @@
 
 Input : sourcedata/<experiment>/<id>_ALLDAT.csv  (one row per EEG sample, behavioural columns repeated per
         sample; artifact rejection and filtering were done upstream, before export), and sessions.tsv
-        (experiment, id) listing the 145 sessions in sub-N order.
+        (experiment, id) listing the 145 sessions in sub-N order. Of the 31 exported channels, the 28 in
+        config.CHANNELS are kept (Fp1, Fp2 and TP9 are dropped).
 Output: derivatives/epochs/sub-N/eeg/sub-N_task-<experiment>_epo.npy      trials x 28 channels x 500 samples
         derivatives/epochs/sub-N/eeg/sub-N_task-<experiment>_trials.tsv   one row per epoch (same order)
         participants.tsv

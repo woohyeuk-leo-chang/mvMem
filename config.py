@@ -18,7 +18,7 @@ FIGURES = Path(os.environ.get("MVMEM_FIGURES", CODE / "figures"))
 # E1-E3 recorded study and test phases, E4-E7 study only, E8 test only
 EXPERIMENTS = ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8"]
 
-# ---- EEG epochs ----
+# ---- EEG epochs: 28 channels (the raw exports have 31; Fp1, Fp2 and TP9 are not used) ----
 CHANNELS = ["Fz", "F3", "F7", "CP5", "FC5", "FC1", "C3", "PO3", "PO7", "CP1", "Pz", "P3", "P7", "O1",
             "Oz", "O2", "P4", "P8", "PO8", "CP2", "Cz", "C4", "PO4", "CP6", "FC6", "FC2", "F4", "F8"]
 TMIN_MS, N_SAMPLES = -200, 500                                    # 500 Hz: -200 ... 798 ms

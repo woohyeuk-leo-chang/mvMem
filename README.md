@@ -1,7 +1,7 @@
 # mvMem
 
 Analysis code for the mvMem study (stimulus-specific memorability and EEG decoding). It reproduces every number
-and figure in the paper from the accompanying data package (Zenodo, DOI: to be added).
+and figure in the paper from the accompanying data package (Zenodo, https://doi.org/10.5281/zenodo.23751375).
 
 ```
 config.py        paths (set MVMEM_DATA) and analysis constants
@@ -23,9 +23,12 @@ python 3_plot/make_figures.py                     # all figures from the group-l
 python 2_analyze/figure_sources.py                # recompute those tables from the per-session results
 ```
 
-Full re-analysis from the epochs (1,000 folds per session and run; slow):
+Full re-analysis from the epochs (1,000 folds per session and run; slow). This needs the
+[mvEEG](https://github.com/AwhVogelLab/mvEEG) package from the Awh & Vogel lab on the Python path:
 
 ```bash
+git clone https://github.com/AwhVogelLab/mvEEG.git /path/to/mvEEG
+export PYTHONPATH=/path/to/mvEEG
 python 2_analyze/decoding.py
 python 2_analyze/rsa.py
 python 2_analyze/figure_sources.py && python 3_plot/make_figures.py
@@ -36,7 +39,7 @@ python 2_analyze/figure_sources.py && python 3_plot/make_figures.py
 | Step | Script | Input | Output (in the data package) | Paper |
 |---|---|---|---|---|
 | 1 | `1_generate/item_memorability.py` | `behavior/online_trials.tsv` | `behavior/item_memorability.tsv` | Fig. 1b, ED Fig. 1 |
-| 1 | `1_generate/ann_features.py` | `stimuli/images/` | `derivatives/ann/` (features, distinctiveness, similarity) | Fig. 1c–e |
+| 1 | `1_generate/ann_features.py` | `stimuli/images/` (see *Stimuli*) | `derivatives/ann/` (features, distinctiveness, similarity) | Fig. 1c–e |
 | 1 | `1_generate/eeg_epochs.py` | raw EEG exports (`sourcedata/`, not deposited) | `derivatives/epochs/`, `participants.tsv` | all EEG |
 | 2 | `2_analyze/behavior.py` | item scores, online trials | `derivatives/group/fig1/fig1_behavior_stats.tsv` | Fig. 1b |
 | 2 | `2_analyze/ann.py` | `derivatives/ann/` | `derivatives/group/fig1/` | Fig. 1c–e |
@@ -63,9 +66,16 @@ python 2_analyze/figure_sources.py && python 3_plot/make_figures.py
 - **Randomness.** Folds are seeded per session (`config.SEED`). The deposited per-session results were computed
   without fixed seeds, so a re-run reproduces them up to Monte Carlo error.
 
+## Stimuli
+
+The 2,400 object images are from Brady et al. (2008) and are not redistributed here. Download them from the Brady
+lab (https://bradylab.ucsd.edu/stimuli.html) into `data/stimuli/images/`; they are only needed to re-extract ANN
+features (`1_generate/ann_features.py`). Every other step uses the deposited features and item tables.
+
 ## Dependencies
 
-- [mvEEG](https://github.com/...) for classification and crossnobis distances (`mvEEG.Classifier`, `mvEEG.Crossnobis`,
-  `mvEEG.Wrangler.bin_trials`).
+- [mvEEG](https://github.com/AwhVogelLab/mvEEG) (Awh & Vogel lab) for classification and crossnobis distances
+  (`mvEEG.Classifier`, `mvEEG.Crossnobis`, `mvEEG.Wrangler.bin_trials`); needed only for `2_analyze/decoding.py` and
+  `2_analyze/rsa.py`. Clone it and add it to `PYTHONPATH` (see above).
 - ANN features: thingsvision (ResNet-50 IMAGENET1K_V2, CORnet-S, DINOv2 ViT-L/14, CLIP ViT-L/14 and RN50) and resmem.
 - Fonts: figures use Arial if `3_plot/fonts/Arial*.ttf` exist (not distributed), otherwise Liberation Sans.

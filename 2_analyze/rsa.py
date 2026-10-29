@@ -16,8 +16,8 @@ import argparse, os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import numpy as np
 from mne.parallel import parallel_func
-import mvEEG
 import config as C
+import mvEEG
 from mvmem import io, labels
 from mvmem.eeg import time_bin, Binner, rsa_split
 
