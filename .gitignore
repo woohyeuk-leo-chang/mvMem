@@ -14,3 +14,6 @@ figures/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Zenodo deposit (built by tools/make_zenodo_zips.py)
+zenodo/

@@ -4,6 +4,27 @@ Data for the mvMem manuscript (stimulus-specific memorability and EEG decoding).
 (GitHub / Zenodo, DOI: to be added). File names follow BIDS conventions (`sub-`, `task-`, `phase-`, `desc-`), but the
 package is not a validated BIDS dataset: arrays are NumPy `.npy` files.
 
+## Downloading
+
+The deposit holds 15 zips plus three loose files (`README.md`, `participants.tsv`, `dataset_description.json`).
+Every zip stores paths from the top of the package, so unzipping any subset into one folder (the code's `data/`)
+rebuilds the layout below. Download only what you need:
+
+| Zip | Contents | Size | Needed for |
+|---|---|---|---|
+| `group_results.zip` | every table behind the figures | < 0.01 GB | redrawing all figures (with `behavior.zip`) |
+| `behavior.zip` | online task trials, item memorability | 0.06 GB | Fig. 1b, ED Fig. 1 |
+| `stimuli.zip` | the 2,400 images | 0.09 GB | ANN feature extraction |
+| `ann.zip` | layer features, distinctiveness, similarity tables | 0.22 GB | Fig. 1c–e |
+| `decoding_HxFA.zip` | H/FA decoding (within / cross phase and dimension) | 0.83 GB | Figs 2, 4 |
+| `decoding_distinctiveness.zip` | distinctiveness decoding, six models | 3.94 GB | Fig. 5a–d, ED Fig. 2 |
+| `rsa.zip` | all RDMs | 0.03 GB | Figs 3, 5e–f, ED Fig. 3 |
+| `eeg_epochs_<experiment>.zip` (8) | epochs + trial tables per experiment: DUCK1 1.14, DUCK2 2.00, FALCON 0.49, SWAN1 0.11, SWAN2 0.98, SWAN3 0.20, SWAN4 1.43, COLIBRI 0.64 GB | 7.0 GB | re-running decoding / RSA |
+
+`checksums.tsv` lists the MD5 of every file. The EEG scripts skip experiments whose epochs are not unpacked.
+
+## Layout
+
 ```
 participants.tsv              one row per EEG session (sub-1 ... sub-145): experiment, original ID, phases, trial counts
 behavior/
