@@ -1,4 +1,4 @@
-"""Group statistics, identical to what the analysis notebooks plot.
+"""Group statistics.
 
 Decoding (mvEEG.Interpreter conventions)
   contrast  per session, mean over folds of score[:, 1, t] - score[:, 0, t] (classes high = 0, low = 1)
@@ -83,7 +83,7 @@ def design(levels, names):
 
 
 def fit_rsa(emp_vec, theo, keys):
-    """Returns (zero-order dict, semi-partial dict, model R2) -- rsa_analysis.ipynb cell 15, verbatim."""
+    """Returns (zero-order dict, semi-partial dict, model R2)."""
     y = sista.rankdata(emp_vec).astype(float)
     P = {k: sista.rankdata(theo[k]).astype(float) for k in keys}
 

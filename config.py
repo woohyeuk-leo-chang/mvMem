@@ -1,6 +1,6 @@
 """Paths and analysis constants shared by every script.
 
-Set MVMEM_DATA to the unpacked data package (default: ./data inside this repository; git-ignored).
+Set MVMEM_DATA to the data package (default: ./data).
 """
 import os
 from pathlib import Path
@@ -13,7 +13,6 @@ BEH = DATA / "behavior"                                           # online recog
 DERIV = DATA / "derivatives"
 EPOCHS, DECODING, RSA, ANN, GROUP = (DERIV / d for d in ["epochs", "decoding", "rsa", "ann", "group"])
 FIGURES = Path(os.environ.get("MVMEM_FIGURES", CODE / "figures"))
-FONTS = CODE / "3_plot" / "fonts"                                 # optional Arial TTFs (licensed; not distributed)
 
 # ---- sessions: sub-1 ... sub-145, numbered in this experiment order (participants.tsv) ----
 EXPERIMENTS = ["DUCK1", "DUCK2", "FALCON", "SWAN1", "SWAN2", "SWAN3", "SWAN4", "COLIBRI"]
@@ -21,15 +20,13 @@ EXPERIMENTS = ["DUCK1", "DUCK2", "FALCON", "SWAN1", "SWAN2", "SWAN3", "SWAN4", "
 # ---- EEG epochs ----
 CHANNELS = ["Fz", "F3", "F7", "CP5", "FC5", "FC1", "C3", "PO3", "PO7", "CP1", "Pz", "P3", "P7", "O1",
             "Oz", "O2", "P4", "P8", "PO8", "CP2", "Cz", "C4", "PO4", "CP6", "FC6", "FC2", "F4", "F8"]
-SFREQ, TMIN_MS, N_SAMPLES = 500, -200, 500                        # 2-ms samples, -200 ... 798 ms
+TMIN_MS, N_SAMPLES = -200, 500                                    # 500 Hz: -200 ... 798 ms
 T_WIN, T_STEP = 50, 25                                            # ms; step = int(25 // 2) = 12 samples = 24 ms
 
 # ---- ANN models (keys used in file names / columns) ----
 MODELS = ["clip", "resnet50", "cornet_s", "dinov2", "clip_rn50", "resmem"]
-MODEL_LABELS = {"clip": "CLIP ViT-L/14", "resnet50": "ResNet-50", "cornet_s": "CORnet-S",
-                "dinov2": "DINOv2", "clip_rn50": "CLIP-RN50", "resmem": "ResMem"}
 MODEL_COLUMNS = {"clip": "CLIP", "resnet50": "ResNet-50", "cornet_s": "CORnet-S",   # column prefix in
-                 "dinov2": "DINOv2", "clip_rn50": "CLIP-RN50", "resmem": "ResMem"}  # distinctiveness table
+                 "dinov2": "DINOv2", "clip_rn50": "CLIP-RN50", "resmem": "ResMem"}  # distinctiveness.tsv
 
 # ---- decoding ----
 DEC_BIN, DEC_FOLDS, DEC_TEST_SIZE = 20, 1000, 0.3                 # 20-trial averages, 1,000 folds, 70/30 split

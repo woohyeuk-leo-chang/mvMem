@@ -1,22 +1,18 @@
-"""Figure 3 at Nature double-column spec (183 mm), drawn at final size.
-a  RSA schematic (theoretical RDMs left; condition colour bars + EEG RDM right): 2x2x2 conditions, model RDMs (H, FA, mnemonic status), regression of the
-   EEG RDM on the models -> semi-partial rank correlations.
-b  H x FA x status RSA, all test trials.   c, d  H x FA RSA within targets / within foils.
-Inputs: derivatives/group/fig3/*.csv (2_analyze/figure_sources.py), fonts.
+"""Figure 3: RSA schematic with the group-mean EEG RDM (a); H x FA x status RSA, all test trials (b);
+H x FA RSA within targets / foils (c, d).
+Inputs: derivatives/group/fig3/*.csv.
 Usage: python fig3.py <group/fig3> <out stem> <fonts dir>"""
-import os, sys, glob
+import os, sys
 import numpy as np, pandas as pd
 import matplotlib as mpl
 mpl.use("pdf")
 import matplotlib.pyplot as plt
-from matplotlib import font_manager as fm
 from matplotlib.patches import Rectangle, FancyArrowPatch
-from matplotlib.lines import Line2D
 
 SRC, OUT, FONT_DIR = sys.argv[1:4]
-from nature_style import apply as _apply_style, PT, LW
-FAM = _apply_style(FONT_DIR, overrides={"lines.linewidth": 1.5})   # shared Nature style (nature_style.py)
-COL = {"H": "#2166ac", "FA": "#b2182b", "STATUS": "0.30"}      # status neutral grey: CVD-safe vs blue
+from style import apply as _apply_style, PT, LW
+FAM = _apply_style(FONT_DIR, overrides={"lines.linewidth": 1.5})
+COL = {"H": "#2166ac", "FA": "#b2182b", "STATUS": "0.30"}
 NAME = {"H": "H-ability", "FA": "FA-ability", "STATUS": "Status"}
 INK, MID = "0.15", "0.45"
 
@@ -50,7 +46,7 @@ def rdm(x, y, M, color, cs, title=None, cmap=None):
     A.add_patch(Rectangle((x, y), n * cs, n * cs, fill=False, ec=INK, lw=0.5, zorder=3))
     if title: txt(x + n * cs / 2, y - 2.2, title, PT["tick"], color=color if cmap is None else INK)
 # ---- layout: [labels] theoretical RDMs (stacked) | bracket | condition colour bars + EEG RDM + grey scale bar
-CS = 5.0                                   # EEG RDM cell (mm): 8 x 5.0 = 40 mm, filling the row height
+CS = 5.0                                   # EEG RDM cell (mm)
 ry = 5.8
 MGAP = 3.2; MCS = (8 * CS - 2 * MGAP) / 24; MS = 8 * MCS     # three models span the EEG RDM height
 mx = 14.3                                                    # model RDMs; their labels sit to the left
@@ -62,13 +58,12 @@ for k, f in enumerate(["H", "FA", "STATUS"]):
     txt(mx - 1.2, y + MS / 2, NAME[f] if f != "STATUS" else "Status", PT["small"], ha="right", color=COL[f])
 bk = mx + MS + 2.6                                   # bracket closing the group of theoretical models
 A.plot([bk - 1.0, bk, bk, bk - 1.0], [ry, ry, ry + 8 * CS, ry + 8 * CS], color=INK, lw=0.5, solid_joinstyle="miter")
-# condition colour bars (one column per factor, same order as the models: H-ability, FA-ability, status;
-# dark = high / old, light = low / new); unlabelled -- the model colours identify the columns
+# condition colour bars, one column per factor (H-ability, FA-ability, status); dark = high / old, light = low / new
 KS = 2.4; kx = bk + 2.4
 for r, (st, h, f) in enumerate(cond):
     for k, (v, shade) in enumerate([(h, (COL["H"], "#c6dbef")), (f, (COL["FA"], "#fcbba1")), (st, ("0.25", "0.82"))]):
         A.add_patch(Rectangle((kx + k * KS, ry + r * CS), KS - 0.4, CS, fc=shade[0] if v else shade[1], ec="white", lw=0.3, zorder=2))
-# empirical RDM: group mean over participants, 200-600 ms (compute_fig3_source.py), grey scale bar
+# empirical RDM: group mean, 200-600 ms, with grey scale bar
 G = pd.read_csv(os.path.join(SRC, "fig3_empirical_rdm_200-600ms.csv")).values
 VMAX = 0.75
 ex = kx + 3 * KS + 0.8
@@ -119,6 +114,6 @@ for k, (an, L, title) in enumerate([("targets", "c", "Targets (old items)"), ("f
     ax.set_xlabel("Time from stimulus onset (ms)")
     if k == 0: ax.set_ylabel("Semi-partial correlation")
     letter(L, x0 - 14.0, GY - 6.0)
-fig.savefig(OUT + ".pdf", metadata={"Title": "Fig. 3", "Subject": "Neural signatures of H-ability and FA-ability are independent of mnemonic status"})
+fig.savefig(OUT + ".pdf", metadata={"Title": "Fig. 3"})
 fig.savefig(OUT + "_preview.png", dpi=600)
 print("saved", OUT, W_MM, H_MM, FAM)

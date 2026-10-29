@@ -1,4 +1,4 @@
-"""Cross-validated RDMs (crossnobis) for the RSA designs (rsa_analysis.ipynb cells 9-10, 30, 34).
+"""Cross-validated RDMs (crossnobis) for the RSA designs.
 
 Designs (median-split levels, low = 1, high = 2; conditions ordered with the first factor outermost):
   HFADist<Model>  H x FA x distinctiveness, 8 conditions, study and test phase separately

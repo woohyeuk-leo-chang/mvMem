@@ -1,8 +1,7 @@
 """Item-level memorability from the online recognition task (n = 989 participants, 2,400 images).
 
 For each image: hit rate (as a studied target), false-alarm rate (as a foil), z(H), z(FA), d' = z(H) - z(FA).
-No rate in this dataset is 0 or 1, so the probit needs no correction. Rows are sorted by file name (the deposited
-item_memorability.tsv keeps the original order, which the ANN feature files follow).
+No rate in this dataset is 0 or 1, so the probit needs no correction.
 
   python 1_generate/item_memorability.py                       # from behavior/online_trials.tsv
   python 1_generate/item_memorability.py --raw <memorability_preprocessing>   # rebuild online_trials.tsv first

@@ -5,13 +5,10 @@ MODEL_REGISTRY: dict of model configs consumed by extract_features / extract_fea
   Required keys: model_name, source, pretrained, module_names, flatten_acts
   Optional keys: model_parameters, batch_size, device
 
-  module_names : list of 5 submodule names, early -> late, used by extract_features()
-                 for the layer-wise (distinctiveness-across-layers) extraction. The last
-                 entry is always the model's actual final embedding (the same layer used
-                 throughout the rest of the pipeline, e.g. previously-computed distinctiveness).
-  module_name  : single submodule name (= module_names[-1]), kept for
-                 extract_features_from_paths() / dnn_sorting.ipynb's pairwise-similarity
-                 use case, which only ever wants the one final embedding.
+  module_names : 5 submodule names, early -> late, used by extract_features(); the last
+                 entry is the model's final embedding.
+  module_name  : the final embedding (= module_names[-1]), used by extract_features_from_paths()
+                 for the similarity benchmark.
 
 ResMem uses _loader="resmem" as a sentinel for a custom extraction path (thingsvision has
 no knowledge of ResMem's memorability-tuned weights).
@@ -39,7 +36,7 @@ MODEL_REGISTRY = {
         source="torchvision",
         pretrained=True,
         model_parameters={},
-        # 4 residual macro-stages + the actual final embedding (avgpool)
+        # 4 residual stages + final embedding (avgpool)
         module_names=["layer1", "layer2", "layer3", "layer4", "avgpool"],
         flatten_acts=True,
         batch_size=64,
@@ -49,7 +46,6 @@ MODEL_REGISTRY = {
         source="custom",
         pretrained=True,
         model_parameters={},
-        # named after the ventral visual hierarchy by design (Kubilius et al., 2019)
         module_names=["V1", "V2", "V4", "IT", "decoder.avgpool"],
         flatten_acts=True,
         batch_size=64,
@@ -59,8 +55,7 @@ MODEL_REGISTRY = {
         source="timm",
         pretrained=True,
         model_parameters={},
-        # ViT-L/14 has 24 blocks; quartile depth samples + fc_norm (Identity; captures
-        # the pooled CLS token post-final-LayerNorm -- the actual final embedding)
+        # blocks at quartile depths (of 24) + fc_norm (pooled CLS token after the final LayerNorm)
         module_names=["blocks.5", "blocks.11", "blocks.17", "blocks.23", "fc_norm"],
         flatten_acts=False,
         batch_size=16,
@@ -70,8 +65,7 @@ MODEL_REGISTRY = {
         source="custom",
         pretrained=True,
         model_parameters={"variant": "ViT-L/14"},
-        # ViT-L/14 has 24 resblocks; quartile depth samples + visual (= ln_post + proj,
-        # i.e. the actual joint image-text embedding space -- see visual.forward())
+        # resblocks at quartile depths (of 24) + visual (ln_post + projection: joint image-text embedding)
         module_names=[
             "visual.transformer.resblocks.5",
             "visual.transformer.resblocks.11",
@@ -88,8 +82,7 @@ MODEL_REGISTRY = {
         source="custom",
         pretrained=True,
         model_parameters={"variant": "RN50"},
-        # ModifiedResNet backbone: same 4-stage structure as ResNet-50, nested under
-        # visual.*, + visual itself (attention-pooled + projected joint embedding)
+        # 4 ResNet stages + visual (attention-pooled, projected joint embedding)
         module_names=["visual.layer1", "visual.layer2", "visual.layer3", "visual.layer4", "visual"],
         flatten_acts=False,
         batch_size=16,
@@ -97,8 +90,7 @@ MODEL_REGISTRY = {
     ),
     "ResMem": dict(
         _loader="resmem",
-        # features.* is ResMem's ResNet-50 backbone; "features" (the whole submodule's
-        # output) is the existing final embedding, unchanged from before
+        # ResNet-50 backbone stages + "features" (final embedding)
         module_names=["features.layer1", "features.layer2", "features.layer3", "features.layer4", "features"],
     ),
 }
@@ -106,28 +98,6 @@ MODEL_REGISTRY = {
 # single source of truth: the final embedding layer is always module_names[-1]
 for _cfg in MODEL_REGISTRY.values():
     _cfg.setdefault("module_name", _cfg["module_names"][-1])
-
-MODEL_LABELS = {
-    "ResNet-50": "ResNet-50\n(supervised CNN)",
-    "CORnet-S":  "CORnet-S\n(brain-aligned)",
-    "DINOv2":    "DINOv2\n(self-supervised ViT)",
-    "CLIP":      "CLIP ViT-L/14\n(vision-language)",
-    "CLIP-RN50": "CLIP-RN50\n(vision-language)",
-    "ResMem":    "ResMem\n(memorability-tuned)",
-}
-
-# Hardcoded per-model axis labels for plot_layer_profile (dnn_modules.plotting), same
-# order as MODEL_REGISTRY[name]["module_names"] -- edit directly here, not derived from
-# module_names, so display text can be tweaked independently of the actual hook targets.
-LAYER_DISPLAY_NAMES = {
-    "ResNet-50": ["layer1", "layer2", "layer3", "layer4", "avgpool"],
-    "CORnet-S":  ["V1", "V2", "V4", "IT", "avgpool"],
-    "DINOv2":    ["blocks.5", "blocks.11", "blocks.17", "blocks.23", "fc_norm"],
-    "CLIP":      ["blocks.5", "blocks.11", "blocks.17", "blocks.23", "visual"],
-    "CLIP-RN50": ["layer1", "layer2", "layer3", "layer4", "visual"],
-    "ResMem":    ["layer1", "layer2", "layer3", "layer4", "features"],
-}
-
 
 # ---------------------------------------------------------------------------
 # Feature extraction: layer-wise (early -> late), used by extract_features()
@@ -138,17 +108,8 @@ def _pool_activation(acts):
     reduction for each activation shape.
 
     4D (N,C,H,W) conv feature map   -> global-average-pool over space -> (N,C)
-    3D (N,T,D)   transformer tokens -> mean over patch tokens, excluding the CLS token
-                                        at index 0 -> (N,D). This is the ViT-analogue of
-                                        GAP: a position-marginalized average of local
-                                        features. CLS is reserved for the model's actual
-                                        final readout (fc_norm / visual), which arrives
-                                        here as an already-2D tensor and passes through
-                                        unchanged below -- CLS hasn't been trained to
-                                        summarize the whole image yet at intermediate
-                                        depth, so patch-averaging is the more comparable
-                                        per-layer signal (and the standard choice in the
-                                        layer-wise ViT/encoding-model literature).
+    3D (N,T,D)   transformer tokens -> mean over patch tokens, excluding the CLS token -> (N,D)
+                                        (the final readouts fc_norm / visual arrive already 2D)
     2D (N,D)     already a vector   -> unchanged
     """
     if acts.dim() == 4:
@@ -250,8 +211,7 @@ def _extract_thingsvision(cfg, filenames):
 
 @torch.no_grad()
 def _extract_resmem(cfg, filenames):
-    """Hook features.layer1-4 (GAP-pooled) alongside the existing final-embedding
-    computation (flatten(features(x), 1), unchanged from before)."""
+    """Hook features.layer1-4 (global-average-pooled) alongside the final embedding flatten(features(x), 1)."""
     import torchvision.transforms as T
     from resmem import ResMem
 
@@ -290,9 +250,7 @@ def _extract_resmem(cfg, filenames):
 
 
 # ---------------------------------------------------------------------------
-# Feature extraction: single final-embedding vector for arbitrary paths, used by
-# dnn_sorting.ipynb's pairwise-similarity benchmark. Unchanged in shape/behavior --
-# always cfg["module_name"] (= module_names[-1]), one vector per image.
+# Feature extraction: final-embedding vector for arbitrary image paths (similarity benchmark)
 # ---------------------------------------------------------------------------
 
 def extract_features_from_paths(model_name, cfg, image_paths,

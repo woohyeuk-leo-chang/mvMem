@@ -1,27 +1,23 @@
-"""Figure 2 at Nature double-column spec, drawn at final size (183 mm wide).
-a  redesigned: EEG memory task (common structure only) + multivariate decoding logic.
-b-e  2x2 grid (rows: H-ability, FA-ability; columns: training phase), results unchanged.
-Inputs: derivatives/group/fig2/*.csv (2_analyze/figure_sources.py; mean, +/-1 s.e.m. in ci_lo/ci_hi, significance),
-fig1_assets (stimulus images), fonts (Arial; falls back to Liberation Sans).
+"""Figure 2: EEG task and decoding logic (a); H-ability and FA-ability decoding within and across phase (b-e).
+Inputs: derivatives/group/fig2/*.csv (mean, +/-1 s.e.m. in ci_lo/ci_hi, significance), fig1_assets (stimulus images).
 Usage: python fig2.py <group/fig2> <fig1_assets> <out stem> <fonts dir>"""
-import os, sys, glob
+import os, sys
 import numpy as np, pandas as pd
 import matplotlib as mpl
 mpl.use("pdf")
 import matplotlib.pyplot as plt
-from matplotlib import font_manager as fm
 from matplotlib.patches import Rectangle, FancyArrowPatch, Circle, Polygon, FancyBboxPatch
 from matplotlib.lines import Line2D
 
 SRC, IMG_DIR, OUT, FONT_DIR = sys.argv[1:5]
-from nature_style import apply as _apply_style, PT, LW
-FAM = _apply_style(FONT_DIR, overrides={"lines.linewidth": 1.5})   # shared Nature style (nature_style.py)
-HUE = {"hit": "#2166ac", "fa": "#b2182b"}            # one hue per dimension (blue H, red FA)
+from style import apply as _apply_style, PT, LW
+FAM = _apply_style(FONT_DIR, overrides={"lines.linewidth": 1.5})
+HUE = {"hit": "#2166ac", "fa": "#b2182b"}            # blue H, red FA
 INK, MID, LIGHT = "0.15", "0.45", "0.82"
 
 AH = 52.0                                  # panel a content height (panel-a units)
 A_RIGHT = 165.5                            # rightmost panel-a content (panel-a units)
-S = 182.0 / A_RIGHT                         # uniform scale-up of panel a graphics (text stays 5-7 pt)
+S = 182.0 / A_RIGHT                         # scale of panel a graphics (text size unchanged)
 AHS = AH * S                                # panel a height on the page (mm)
 W_MM, H_MM = 183.0, AHS + 106.0
 fig = plt.figure(figsize=(W_MM / 25.4, H_MM / 25.4))
@@ -58,7 +54,7 @@ def eeg_trace(x0, x1, y, amp=1.0, n=160, seed=None, lw=0.4, color=MID, erp=None)
         w = w + erp[0] * np.exp(-((t - erp[1]) / .07) ** 2)
     A.plot(x0 + t * (x1 - x0), y - w, color=color, lw=lw, zorder=3)
 
-# ---- left: EEG memory task (common structure only; timings/list lengths varied across datasets)
+# ---- left: EEG memory task
 X0 = 2.5
 CS, CDX, CDY = 13.0, 4.6, 3.4                       # cascade image size and offsets (panel-a units)
 txt(X0 + 1.5, 2.6, "EEG memory task", PT["label"], ha="left", weight="bold")
@@ -151,7 +147,7 @@ GX, GW, GGAP = 15.0, 76.5, 13.5
 GY0, GH, GVG = AHS + 8.0, 33.0, 13.5
 YL = (-1.25, 1.8)
 SIG_Y = {"study": -0.40, "test": -0.72, "cross_vs_within": -1.04}
-MK = 5.0                                              # marker area (pt^2): ~2.2-pt squares at final size
+MK = 5.0                                              # significance marker area (pt^2)
 panels = {("hit", "study"): "b", ("hit", "test"): "c", ("fa", "study"): "d", ("fa", "test"): "e"}
 axes = {}
 for (dim, tr), L in panels.items():

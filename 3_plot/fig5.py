@@ -1,26 +1,24 @@
-"""Figure 5 at Nature double-column spec (183 mm), drawn at final size.
-Rows = analyses; each row: CLIP-RN50 time courses (study | test) -> six-model summary (study | test).
-  a, b  distinctiveness self-decoding         (hyperplane contrast)
-  c, d  cross-generalization from distinctiveness to distinctiveness / H-ability / FA-ability
-  e, f  three-factor RSA, full model: unique H-ability, FA-ability, distinctiveness (semi-partial r)
-Summaries: participant-level mean over all post-stimulus time points (16-760 ms); mean +/- 95% CI across participants.
-Inputs: derivatives/group/fig5/*.csv (2_analyze/figure_sources.py), fonts.
+"""Figure 5: per row, CLIP-RN50 time courses (study | test) and the six-model summary (study | test).
+  a, b  distinctiveness self-decoding (hyperplane contrast)
+  c, d  decoders trained on distinctiveness, tested on distinctiveness / H-ability / FA-ability
+  e, f  three-factor RSA (full model): unique H-ability, FA-ability and distinctiveness contributions
+Summaries: session-level mean over all post-stimulus time points (16-760 ms); mean +/- 95% CI across sessions.
+Inputs: derivatives/group/fig5/*.csv.
 Usage: python fig5.py <group/fig5> <out stem> <fonts dir>"""
-import os, sys, glob
+import os, sys
 import numpy as np, pandas as pd, scipy.stats as st
 import matplotlib as mpl
 mpl.use("pdf")
 import matplotlib.pyplot as plt
-from matplotlib import font_manager as fm
 from matplotlib.lines import Line2D
 
 SRC, OUT, FONT_DIR = sys.argv[1:4]
-from nature_style import apply as _apply_style, PT, LW
-FAM = _apply_style(FONT_DIR, overrides={"lines.linewidth": 1.5})   # shared Nature style (nature_style.py)
-COL = {"dist": "#009E73", "hit": "#2166ac", "fa": "#b2182b"}          # Okabe-Ito bluish green: CVD-safe vs blue and red
+from style import apply as _apply_style, PT, LW
+FAM = _apply_style(FONT_DIR, overrides={"lines.linewidth": 1.5})
+COL = {"dist": "#009E73", "hit": "#2166ac", "fa": "#b2182b"}
 COL.update({"DIST": COL["dist"], "H": COL["hit"], "FA": COL["fa"]})
 INK, MID = "0.15", "0.45"
-MODELS = ["resnet50", "cornet_s", "dinov2", "clip", "clip_rn50", "resmem"]          # Fig. 1 order
+MODELS = ["resnet50", "cornet_s", "dinov2", "clip", "clip_rn50", "resmem"]
 MNAME = {"resnet50": "ResNet-50", "cornet_s": "CORnet-S", "dinov2": "DINOv2", "clip": "CLIP ViT-L/14", "clip_rn50": "CLIP-RN50", "resmem": "ResMem"}
 REP = "clip_rn50"
 
@@ -108,7 +106,7 @@ lim = max(0.5, np.ceil(np.abs(vals).max() * 10 + 1.5) / 10)
 sms = sm_axes(1, "Mean contrast (a.u.)", (-lim, lim), [-0.4, 0, 0.4] if lim <= 0.7 else [-0.5, 0, 0.5])
 for j, ph in enumerate(PH):
     for i, m in enumerate(MODELS):
-        for key, off in [("hit", -0.19), ("fa", 0.19)]:                # diverging bars: sign is the result
+        for key, off in [("hit", -0.19), ("fa", 0.19)]:
             mu, lo, hi = ci95(dsub.query("model == @m and phase == @ph and tested == @key").mean_contrast)
             sms[j].barh(i + off, mu, height=0.34, color=COL[key], lw=0, zorder=2)
             sms[j].plot([lo, hi], [i + off] * 2, color=INK, lw=0.5, zorder=3)
@@ -136,6 +134,6 @@ h = [Line2D([], [], color=COL["dist"], lw=LW["data"]), Line2D([], [], color=COL[
      Line2D([], [], mfc=INK, mec=INK, **sq)]
 fig.legend(h, ["Distinctiveness", "H-ability", "FA-ability", "Significant time point (q < 0.05)"], ncol=4, loc="center",
            bbox_to_anchor=(0.5, 1 - (H_MM - 3.2) / H_MM), handlelength=2.0, columnspacing=2.0, fontsize=PT["tick"])
-fig.savefig(OUT + ".pdf", metadata={"Title": "Fig. 5", "Subject": "Distinctiveness shares a neural axis with H-ability and FA-ability but does not fully account for them"})
+fig.savefig(OUT + ".pdf", metadata={"Title": "Fig. 5"})
 fig.savefig(OUT + "_preview.png", dpi=600)
 print("saved", OUT, W_MM, H_MM, FAM)

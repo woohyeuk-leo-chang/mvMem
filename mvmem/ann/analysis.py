@@ -6,44 +6,28 @@ from statsmodels.stats.multitest import multipletests
 
 
 def compute_distinctiveness(vecs):
-    """1 - mean cosine similarity of each image to all others.
-    High = isolated/distinctive; Low = dense/generic.
-    Grounded in global matching models: Hintzman 1988 MINERVA 2; Shiffrin & Steyvers 1997 REM.
-    """
+    """Global distinctiveness: 1 - mean cosine similarity of each image to all others."""
     sim = cosine_similarity(vecs)
     np.fill_diagonal(sim, 0)
     return 1 - sim.mean(axis=1)
 
 
 def compute_correlations(distinctiveness, h_scores, fa_scores, n_perms=5000, seed=0):
-    """Return DataFrame of Pearson r and Spearman rho for distinctiveness × HIT/FA,
-    one row per (model, depth, score). `distinctiveness` keys are (model, depth) tuples
-    -- e.g. from a layer-wise extract_features() run, depth = "stage1".."stage4","final".
+    """Pearson r and Spearman rho for distinctiveness x HIT / FA, one row per (model, depth, score).
+    `distinctiveness` is keyed by (model, depth).
 
-    Also computes permutation-based significance for both pearson_r and spearman_rho,
-    each its own family (independent FDR correction):
-      - perm_p / fdr_q / sig_fdr: for pearson_r. h_scores/fa_scores are shuffled n_perms
-        times (shared across every row, for speed and so every test uses the same null) and
-        the correlation recomputed each time, giving an assumption-free empirical null --
-        standard practice in DNN-representation/behavior work over the parametric p-value,
-        which assumes normality.
-      - perm_p_spearman / fdr_q_spearman / sig_fdr_spearman: the same idea for spearman_rho.
-        Spearman's rho is just Pearson's r computed on ranks, so this reuses the identical
-        permutation null, rank-transformed, rather than a second independent scheme.
-      Both fdr_q columns are Benjamini-Hochberg corrections across the whole returned table
-      (every model x depth x score row is one family) -- kept separate because pearson_r and
-      spearman_rho are different statistics/hypotheses, not because of anything about depth
-      or model.
+    Significance: permutation p-values (the scores shuffled n_perms times, one shared null for every row),
+    then Benjamini-Hochberg FDR across the whole table, separately for Pearson (perm_p, fdr_q, sig_fdr)
+    and Spearman (perm_p_spearman, fdr_q_spearman, sig_fdr_spearman).
     """
     def _z(x):
         return (x - x.mean()) / x.std()
 
     n = len(h_scores)
     rng = np.random.default_rng(seed)
-    perm_idx = np.argsort(rng.random((n_perms, n)), axis=1)  # shared null, reused below
+    perm_idx = np.argsort(rng.random((n_perms, n)), axis=1)
 
     score_arrays = {"HIT": h_scores, "FA": fa_scores}
-    # the expensive gathers (n_perms, n) are done once per score, not once per row
     perm_scores_z      = {name: _z(np.asarray(arr))[perm_idx] for name, arr in score_arrays.items()}
     perm_scores_rank_z = {name: _z(rankdata(arr))[perm_idx] for name, arr in score_arrays.items()}
 

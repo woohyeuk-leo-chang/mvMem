@@ -1,4 +1,4 @@
-"""Raw per-session EEG exports -> analysis-ready epochs and trial tables (preprocessing.ipynb).
+"""Raw per-session EEG exports -> analysis-ready epochs and trial tables.
 
 Input : sourcedata/<experiment>/<id>_ALLDAT.csv  (one row per EEG sample, behavioural columns repeated per
         sample; artifact rejection and filtering were done upstream, before export), and sessions.tsv

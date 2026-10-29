@@ -1,21 +1,19 @@
-"""Figure 4 at Nature double-column spec (183 mm), drawn at final size.
-a-d  cross-dimension decoding (rows: training dimension; columns: phase); line colour = tested dimension.
-e    schematic of the flipped generalization (familiarity axis; hypothesized U-shaped neural dimension).
-Inputs: derivatives/group/fig4/*.csv (2_analyze/figure_sources.py; mean, +/-1 s.e.m., significance), fonts.
+"""Figure 4: cross-dimension decoding (a-d; rows = training dimension, columns = phase, colour = tested
+dimension) and a schematic of the opposite-polarity generalization (e).
+Inputs: derivatives/group/fig4/*.csv (mean, +/-1 s.e.m., significance).
 Usage: python fig4.py <group/fig4> <out stem> <fonts dir>"""
-import os, sys, glob
+import os, sys
 import numpy as np, pandas as pd
 import matplotlib as mpl
 mpl.use("pdf")
 import matplotlib.pyplot as plt
-from matplotlib import font_manager as fm
 from matplotlib.lines import Line2D
 from matplotlib.collections import LineCollection
 from matplotlib.legend_handler import HandlerTuple
 
 SRC, OUT, FONT_DIR = sys.argv[1:4]
-from nature_style import apply as _apply_style, PT, LW
-FAM = _apply_style(FONT_DIR, overrides={"lines.linewidth": 1.5})   # shared Nature style (nature_style.py)
+from style import apply as _apply_style, PT, LW
+FAM = _apply_style(FONT_DIR, overrides={"lines.linewidth": 1.5})
 HUE = {"hit": "#2166ac", "fa": "#b2182b"}
 NAME = {"hit": "H-ability", "fa": "FA-ability"}
 INK, MID = "0.15", "0.45"
@@ -49,20 +47,20 @@ for (tr, ph), L in panels.items():
         ax.scatter(s.time_ms, np.full(len(s), yrow), marker="s", s=MK, lw=0.5, fc=HUE[tested], ec=HUE[tested], zorder=4)
     s = sig.query("phase == @ph and train == @tr and test == 'within_vs_cross'")
     ax.scatter(s.time_ms, np.full(len(s), -1.58), marker="s", s=MK, lw=0.5, fc="0.45", ec="0.45", zorder=4)
-    ax.axhline(0, color="0.55", lw=0.6, zorder=0)                       # zero = no generalization; sign = polarity
+    ax.axhline(0, color="0.55", lw=0.6, zorder=0)
     ax.axvline(0, color="0.5", lw=LW["thin"], zorder=0)
     ax.set_xlim(-200, 775); ax.set_ylim(*YL); ax.set_yticks([-1, 0, 1])
     ax.set_xticks([-200, 0, 200, 400, 600])
     if j == 0: ax.set_ylabel("Hyperplane contrast (a.u.)")
     if i == 1: ax.set_xlabel("Time from stimulus onset (ms)")
     ax.text(0.0, 1.04, f"Trained on {NAME[tr]}", transform=ax.transAxes, color=HUE[tr], fontsize=PT["label"],
-            ha="left", va="bottom")                                       # horizontal row heading on every panel
+            ha="left", va="bottom")
     letter(L, x0 - 14.0, y0 - 5.0)
 for j, ph in enumerate(["Study phase", "Test phase"]):
     fig.text((GX + j * (GW + GGAP) + GW / 2) / W_MM, 1 - (GY0 - 5.2) / H_MM, ph, fontsize=PT["label"], ha="center", va="bottom")
 # legend (significance)
 sq = dict(marker="s", ls="", ms=3.0, mew=0.5)
-LEG_Y = GY0 + 2 * GH + GVG + 12.5                                           # just below the a-d x-axis labels
+LEG_Y = GY0 + 2 * GH + GVG + 12.5
 lines_h = [Line2D([], [], color=HUE["hit"], lw=LW["data"]), Line2D([], [], color=HUE["fa"], lw=LW["data"])]
 sig_h = [(Line2D([], [], mfc=HUE["hit"], mec=HUE["hit"], **sq), Line2D([], [], mfc=HUE["fa"], mec=HUE["fa"], **sq)),
          Line2D([], [], mfc="0.45", mec="0.45", **sq)]
@@ -111,6 +109,6 @@ E.text(c0 + 2.0, uy1 - 4.2, "H\u2212", fontsize=PT["label"], color=HUE["hit"], h
 for x_, dim in [(foil_mu.min(), "fa"), (targ_mu.max(), "hit")]:      # familiarity extremes -> top of the U
     E.plot([x_, x_], [fy + 0.8, uy0 + 0.3], color=HUE[dim], lw=0.4, ls=(0, (1, 1.2)), alpha=.8)
 
-fig.savefig(OUT + ".pdf", metadata={"Title": "Fig. 4", "Subject": "H-ability and FA-ability share a neural axis with opposite polarity"})
+fig.savefig(OUT + ".pdf", metadata={"Title": "Fig. 4"})
 fig.savefig(OUT + "_preview.png", dpi=600)
 print("saved", OUT, W_MM, H_MM, FAM)

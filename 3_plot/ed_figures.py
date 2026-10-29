@@ -1,9 +1,9 @@
-"""Extended Data figures 1-3 (Nature style, 183 mm, final size).
+"""Extended Data figures 1-3.
 ED1  item-level memorability distributions (z(H), z(FA), d').
-ED2  six-model distinctiveness decoding: self-decoding and cross-generalization to H/FA, study and test.
-ED3  six-model three-factor RSA (full model): unique H, FA and distinctiveness contributions, study and test.
-Usage: python ed_figures.py <data dir> <out_dir>
-Inputs: behavior/item_memorability.tsv, derivatives/group/fig5/*.csv (2_analyze/figure_sources.py)."""
+ED2  distinctiveness decoding for all six models: self-decoding and generalization to H/FA, study and test.
+ED3  three-factor RSA (full model) for all six models, study and test.
+Inputs: behavior/item_memorability.tsv, derivatives/group/fig5/*.csv.
+Usage: python ed_figures.py <data dir> <out_dir>"""
 import os, sys
 import numpy as np, pandas as pd
 import matplotlib as mpl
@@ -11,7 +11,7 @@ mpl.use("pdf")
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 HERE = os.path.dirname(os.path.abspath(__file__))
-from nature_style import apply, PT, LW, INK, MID, COLORS, Canvas
+from style import apply, PT, LW, INK, MID, COLORS, Canvas
 ROOT, OUT = sys.argv[1:3]; os.makedirs(OUT, exist_ok=True)
 apply(os.path.join(HERE, "fonts"), overrides={"lines.linewidth": 1.5})
 SRC = os.path.join(ROOT, "derivatives", "group", "fig5")
@@ -28,13 +28,13 @@ def save(c, name, title):
 mem = pd.read_csv(os.path.join(ROOT, "behavior", "item_memorability.tsv"), sep="\t")
 c = Canvas(45.0)
 specs = [("zhit", "hit", "H-ability, $z$(H)", "a"), ("zfa", "fa", "FA-ability, $z$(FA)", "b"), ("dprime", "dprime", "$d\\prime$ = $z$(H) \u2212 $z$(FA)", "c")]
-X0, W, G = 14.0, 47.0, 13.0                                   # three panels across the full width
+X0, W, G = 14.0, 47.0, 13.0
 for k, (col, key, lab, L) in enumerate(specs):
     x = mem[col].values
     ax = c.ax(X0 + k * (W + G), 7.0, W, 30.0)
     ax.hist(x, bins=40, color=COL[key], alpha=.85, lw=0)
     ax.axvline(x.mean(), color=INK, lw=LW["thin"], ls=(0, (2, 1.5)))
-    ax.set_ylim(0, ax.get_ylim()[1] * 1.42)            # headroom so the summary text clears the bars
+    ax.set_ylim(0, ax.get_ylim()[1] * 1.42)            # room for the summary text
     ax.set_xlabel(lab)
     if k == 0: ax.set_ylabel("Images")
     ax.text(0.98, 0.97, f"mean {x.mean():.2f}\nSD {x.std(ddof=1):.2f}\nrange {x.min():.2f} to {x.max():.2f}".replace("-", "\u2212"),

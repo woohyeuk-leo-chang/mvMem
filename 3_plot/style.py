@@ -1,7 +1,5 @@
-"""Shared Nature-format style for all figure scripts (183-mm double column, drawn at final size).
-Fonts: Arial (TrueType, embedded, editable) from 3_plot/fonts; falls back to Liberation Sans (metric-compatible)
-when Arial is not available. Sizes follow the Nature research figure guide: panel letters 8 pt bold,
-other text 5-7 pt, lines 0.25-1 pt."""
+"""Shared figure style: sizes, line widths, colours and a millimetre-based canvas.
+Uses Arial from 3_plot/fonts if present, otherwise Liberation Sans."""
 import glob, os
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -10,16 +8,15 @@ from matplotlib import font_manager as fm
 PT = dict(letter=8, label=7, tick=6, annot=6, small=5)       # font sizes (pt)
 LW = dict(axis=0.5, data=0.9, thin=0.4)                       # line widths (pt)
 INK, MID = "0.15", "0.45"                                     # text / secondary-text greys
-# Figure-wide colour conventions (Figs 2-5). CVD-checked (Machado et al. 2009 simulations):
 COLORS = {"H": "#2166ac", "FA": "#b2182b",                    # H-ability blue, FA-ability red
-          "DIST": "#009E73",                                  # distinctiveness, Okabe-Ito bluish green
-          "STATUS": "0.30"}                                   # mnemonic status, neutral grey
-W_MM = 183.0
+          "DIST": "#009E73",                                  # distinctiveness
+          "STATUS": "0.30"}                                   # mnemonic status
+W_MM = 183.0                                                  # figure width (mm)
 
 
 def apply(font_dir, overrides=None):
-    """Register Arial (if present) and set rcParams; `overrides` keeps per-figure legacy settings so that
-    approved figures regenerate unchanged. Returns the font family actually used."""
+    """Register Arial (if present) and set rcParams; `overrides` holds per-figure settings.
+    Returns the font family used."""
     fam = "Arial"
     ttfs = glob.glob(os.path.join(font_dir, "Arial*.ttf"))
     if ttfs:

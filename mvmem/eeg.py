@@ -1,4 +1,4 @@
-"""Time binning and train/test splitting, as in analysis_final.ipynb / rsa_analysis.ipynb.
+"""Time binning and train/test splitting for decoding and RSA.
 
 Classification (logistic regression on standardized channels) and crossnobis RDMs come from the
 mvEEG package (mvEEG.Classifier, mvEEG.Crossnobis); trial averaging uses mvEEG.Wrangler.bin_trials.
@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 import mvEEG
 import config as C
 
-LEVEL = {"high": 0, "low": 1}                     # class indices (analysis_final.ipynb CATEG_TO_INT)
+LEVEL = {"high": 0, "low": 1}                     # class indices
 
 
 def time_bin(X):
@@ -24,7 +24,7 @@ def time_bin(X):
 
 
 class Binner(mvEEG.Wrangler):
-    """mvEEG.Wrangler reduced to what the analyses use (bin_trials, n_folds) -- no BIDS dataset needed."""
+    """mvEEG.Wrangler reduced to what the analyses use (bin_trials, n_folds)."""
 
     def __init__(self, trial_bin_size, n_folds, seed=C.SEED):
         self.trial_bin_size, self.n_folds = trial_bin_size, n_folds

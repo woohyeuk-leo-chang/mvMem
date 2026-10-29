@@ -1,4 +1,4 @@
-"""Time-resolved decoding of H-ability, FA-ability and ANN distinctiveness (analysis_final.ipynb cells 18-23).
+"""Time-resolved decoding of H-ability, FA-ability and ANN distinctiveness.
 
 Per session and run: logistic regression on 20-trial averages, 1,000 folds; within-phase runs use a disjoint
 stratified 70/30 split, cross-phase runs train on one phase and test on the other.

@@ -1,4 +1,4 @@
-"""ANN analyses for Fig. 1c-e (dnn_analysis.ipynb cells 4-8, 15).
+"""ANN analyses for Fig. 1c-e.
 
   c  model-human similarity benchmark: Spearman rho between model cosine similarity and human similarity
      ratings, 95% bootstrap CI (5,000 resamples; images for PiCS, pairs for BrSt24), against the noise

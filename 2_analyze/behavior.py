@@ -22,7 +22,7 @@ def bootstrap_rho(x, y, n=N_BOOT, seed=SEED):
 
 
 def split_half(trials, n_splits=N_SPLITS, seed=SEED):
-    """Split-half reliability of z(H), z(FA), d' (dnn_analysis.ipynb memorability_ceiling)."""
+    """Split-half reliability of z(H), z(FA), d' across participants (Spearman-Brown corrected)."""
     key = (trials.stim + "|" + trials.stim_type).values
     cells, c_idx = np.unique(key, return_inverse=True)
     subs, s_idx = np.unique(trials["sub"].values, return_inverse=True)

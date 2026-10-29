@@ -1,24 +1,20 @@
-"""Figure 1 at Nature double-column spec (183 mm wide, <=170 mm tall), drawn at final size.
-Data sources: behavior/item_memorability.tsv (b), derivatives/group/fig1_similarity_benchmark.tsv (c),
+"""Figure 1: online task, z(H) x z(FA), model-human similarity, distinctiveness x memorability.
+Inputs: behavior/item_memorability.tsv (b), derivatives/group/fig1_similarity_benchmark.tsv (c),
 derivatives/group/fig1_distinctiveness_memorability.tsv (d, e), fig1_assets/ task images (a).
-Usage: python fig1.py <data dir> <fig1_assets> <out stem> <fonts dir>
-Includes rev1 content changes: no EEG schematic (a), no fit line (b), no titles (d, e).
-Rev2: b square axes, r annotation removed (stat stays in legend); d stretched vertically."""
-import os, sys, glob
+Usage: python fig1.py <data dir> <fig1_assets> <out stem> <fonts dir>"""
+import os, sys
 import numpy as np, pandas as pd
 import matplotlib as mpl
 mpl.use("pdf")
 import matplotlib.pyplot as plt
-from matplotlib import font_manager as fm
 from matplotlib.patches import Rectangle
 import seaborn as sns
 
-ROOT, IMG_DIR, OUT, FONT_DIR = sys.argv[1:5]       # data package, task images, out stem, fonts dir
-from nature_style import apply as _apply_style, PT, LW
-FAM = _apply_style(FONT_DIR, overrides={"lines.solid_capstyle": "projecting"})   # shared Nature style (nature_style.py)
-from nature_style import COLORS
-COLOR_HIT, COLOR_FA = COLORS["H"], COLORS["FA"]                   # figure-wide H/FA colours (harmonized with Figs 2-5)
-BAR_COLOR = "0.5"                            # panel c bars: neutral grey (was #2c7fb8)
+ROOT, IMG_DIR, OUT, FONT_DIR = sys.argv[1:5]
+from style import apply as _apply_style, PT, LW, COLORS
+FAM = _apply_style(FONT_DIR, overrides={"lines.solid_capstyle": "projecting"})
+COLOR_HIT, COLOR_FA = COLORS["H"], COLORS["FA"]
+BAR_COLOR = "0.5"                            # panel c bars
 MODELS = ["ResNet-50", "CORnet-S", "DINOv2", "CLIP", "CLIP-RN50", "ResMem"]
 MODEL_LABELS = {"ResNet-50": "ResNet-50\n(supervised CNN)", "CORnet-S": "CORnet-S\n(brain-aligned)",
                 "DINOv2": "DINOv2\n(self-supervised ViT)", "CLIP": "CLIP ViT-L/14\n(vision-language)",
@@ -33,7 +29,7 @@ LAYER_DISPLAY_NAMES = {
 DEPTH_ORDER = ["stage1", "stage2", "stage3", "stage4", "final"]
 M = lambda s: s.replace("-", "−")               # typographic minus in annotations
 
-# ---- layout (mm). Rev3: panel a widened to close the a|b gap; b kept square and right-aligned.
+# ---- layout (mm)
 WA, SB = 118.0, 42.0                     # panel a width, panel b square side
 HA = WA * 285 / 654                      # panel a height (source aspect)
 R2 = 1.0 + 1.5 + HA - 1.0                # row 2 starts just under panel a
@@ -49,7 +45,7 @@ G = dict(  # layout grid (mm)
     r1=1.0, r2=R2, r3=R3)
 
 # ---------------------------------------------------------------- a: task schematic
-# geometry copied from Images/online_task_design.pdf (source pt; y down)
+# coordinates in source points (y down)
 axA = ax_mm(4.5, G["r1"] + 1.5, WA, HA)
 axA.set_xlim(0, 654); axA.set_ylim(285, 0); axA.axis("off")
 img = {k: plt.imread(os.path.join(IMG_DIR, f"im-00{i}.png")) for k, i in
@@ -166,9 +162,6 @@ axes[0].set_ylim(-.37, .28); axes[0].set_yticks([-.3, -.2, -.1, 0, .1, .2])
 axes[0].legend(loc="lower left", handlelength=1.6, borderaxespad=0.2, labelspacing=0.2)
 letter("e", 0.5, G["r3"])
 
-# Nature final artwork: one vector PDF per figure (fonts embedded as TrueType, editable text,
-# photos >= 300 dpi, < 10 MB). PNG is a 600-dpi preview only, not for submission.
-fig.savefig(OUT + ".pdf", metadata={"Title": "Fig. 1", "Author": "Chang et al.", "Subject":
-            "Relationship between H-ability, FA-ability and ANN-derived image distinctiveness"})
+fig.savefig(OUT + ".pdf", metadata={"Title": "Fig. 1"})
 fig.savefig(OUT + "_preview.png", dpi=600)
 print("saved", OUT, "size mm", W_MM, H_MM)

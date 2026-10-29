@@ -1,9 +1,9 @@
 """Group-level results behind Figs 2-5 and Extended Data Figs 2-3 (the tables the plotting scripts read).
 
 Decoding (Figs 2, 4, 5a-d): hyperplane contrast per session, mean +/- 1 s.e.m., two-tailed one-sample t vs 0
-  and paired t (within vs cross), BH-FDR over post-stimulus time points (analysis_final.ipynb cells 33, 36, 44, 48).
+  and paired t (within vs cross), BH-FDR over post-stimulus time points.
 RSA (Figs 3, 5e-f): semi-partial rank correlations per session x time; Fig. 3 two-tailed one-sample t vs 0 over
-  0-800 ms, FDR; Fig. 5 one-tailed Wilcoxon (greater), FDR over t > 0 (rsa_analysis.ipynb cells 23, 31, 35).
+  0-800 ms, FDR; Fig. 5 one-tailed Wilcoxon (greater), FDR over t > 0.
 
   python 2_analyze/figure_sources.py [--figures 2 3 4 5]
 Output: derivatives/group/fig<N>/*.csv

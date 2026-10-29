@@ -1,9 +1,13 @@
-# data package (deposited on Zenodo, never committed)
+# data package (deposited on Zenodo)
 data/
+zenodo/
 *.npy
 *.npz
 *.pkl
 *.fif
+
+# local packaging scripts
+tools/
 
 # generated figures
 figures/
@@ -14,6 +18,3 @@ figures/
 __pycache__/
 *.pyc
 .DS_Store
-
-# Zenodo deposit (built by tools/make_zenodo_zips.py)
-zenodo/

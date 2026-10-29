@@ -1,4 +1,4 @@
-"""ANN feature extraction (thingsvision / resmem) and distinctiveness, from dnn_modules/."""
+"""ANN feature extraction (thingsvision / resmem) and distinctiveness."""
 import os
 import config as C
 
