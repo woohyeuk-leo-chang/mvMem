@@ -15,7 +15,8 @@ EPOCHS, DECODING, RSA, ANN, GROUP = (DERIV / d for d in ["epochs", "decoding", "
 FIGURES = Path(os.environ.get("MVMEM_FIGURES", CODE / "figures"))
 
 # ---- sessions: sub-1 ... sub-145, numbered in this experiment order (participants.tsv) ----
-EXPERIMENTS = ["DUCK1", "DUCK2", "FALCON", "SWAN1", "SWAN2", "SWAN3", "SWAN4", "COLIBRI"]
+# E1-E3 recorded study and test phases, E4-E7 study only, E8 test only
+EXPERIMENTS = ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E8"]
 
 # ---- EEG epochs ----
 CHANNELS = ["Fz", "F3", "F7", "CP5", "FC5", "FC1", "C3", "PO3", "PO7", "CP1", "Pz", "P3", "P7", "O1",

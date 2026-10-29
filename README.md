@@ -47,8 +47,9 @@ python 2_analyze/figure_sources.py && python 3_plot/make_figures.py
 
 ## Analysis conventions
 
-- **Sessions.** `sub-1` … `sub-145` are recording sessions, numbered in the order DUCK1, DUCK2, FALCON, SWAN1–4, COLIBRI
-  (`participants.tsv` gives the experiment and original ID). Each session is treated as an independent unit.
+- **Sessions.** `sub-1` … `sub-145` are recording sessions from eight experiments, numbered in the order E1 … E8
+  (`participants.tsv` gives the experiment and original ID). E1–E3 recorded study and test phases, E4–E7 the study
+  phase only and E8 the test phase only. Each session is treated as an independent unit.
 - **Labels.** H-ability, FA-ability and each model's distinctiveness are median-split (high/low) at the item level.
 - **Time grid.** 50-ms windows every 24 ms (500-Hz data; `int(25 // 2)` = 12 samples), centred at −176 … 760 ms.
 - **Decoding.** Logistic regression on 20-trial averages, 1,000 folds; within-phase runs use a disjoint stratified

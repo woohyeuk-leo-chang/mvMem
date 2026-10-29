@@ -33,7 +33,7 @@ def raw_file(exp, sid_orig):
 
 def extract(path):
     """One raw file -> (trial table, epochs). Trials ordered by epoch number (= chronological order)."""
-    has_oldnew = "OLDNEW" in pd.read_csv(path, nrows=0).columns          # absent in study-only SWAN files
+    has_oldnew = "OLDNEW" in pd.read_csv(path, nrows=0).columns          # absent in study-only exports (E4-E7)
     raw = pd.read_csv(path, usecols=["Time", "epoch"] + BEH_COLS + C.CHANNELS + (["OLDNEW"] if has_oldnew else []),
                       low_memory=False)
     raw = raw.dropna(subset=["epoch", "Time"]).sort_values(["epoch", "Time"], kind="mergesort")

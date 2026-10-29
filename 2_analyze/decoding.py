@@ -3,7 +3,7 @@
 Per session and run: logistic regression on 20-trial averages, 1,000 folds; within-phase runs use a disjoint
 stratified 70/30 split, cross-phase runs train on one phase and test on the other.
 Runs (desc labels, see mvmem/labels.py):
-  H x FA matrix   {hit,fa}{Study,Test}To{Hit,Fa}{Study,Test}        16 runs (cross-phase only for DUCK1/2, FALCON)
+  H x FA matrix   {hit,fa}{Study,Test}To{Hit,Fa}{Study,Test}        16 runs (cross-phase only for E1-E3)
   distinctiveness dist<Model><Phase>To{Dist<Model>,Hit,Fa}<Phase>, {hit,fa}<Phase>ToDist<Model><Phase>
 Output per session x run: derivatives/decoding/sub-N/sub-N_task-<exp>_desc-<run>_scores.npy
   = mvEEG confidence scores, folds x classes (0 = high, 1 = low) x time; times in derivatives/decoding/times_ms.npy
