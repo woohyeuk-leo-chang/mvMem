@@ -9,9 +9,6 @@ zenodo/
 # local packaging scripts
 tools/
 
-# generated figures
-figures/
-
 # Arial is licensed; scripts fall back to Liberation Sans
 3_plot/fonts/
 
