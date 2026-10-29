@@ -1,6 +1,6 @@
 """Figure 1: online task, z(H) x z(FA), model-human similarity, distinctiveness x memorability.
-Inputs: behavior/item_memorability.tsv (b), derivatives/group/fig1_similarity_benchmark.tsv (c),
-derivatives/group/fig1_distinctiveness_memorability.tsv (d, e), fig1_assets/ task images (a).
+Inputs: behavior/item_memorability.tsv (b), derivatives/group/fig1/fig1_similarity_benchmark.tsv (c),
+derivatives/group/fig1/fig1_distinctiveness_memorability.tsv (d, e), fig1_assets/ task images (a).
 Usage: python fig1.py <data dir> <fig1_assets> <out stem> <fonts dir>"""
 import os, sys
 import numpy as np, pandas as pd
@@ -89,7 +89,7 @@ axB.set_xticks([-2, -1.5, -1, -0.5, 0]); axB.set_yticks([0, .5, 1, 1.5, 2])
 letter("b", 181.5 - SB - 14.5, G["r1"])
 
 # ---------------------------------------------------------------- c: model-human similarity
-mci = pd.read_csv(os.path.join(ROOT, "derivatives", "group", "fig1_similarity_benchmark.tsv"), sep="\t")
+mci = pd.read_csv(os.path.join(ROOT, "derivatives", "group", "fig1", "fig1_similarity_benchmark.tsv"), sep="\t")
 def similarity_panel(ax, ds, title):
     sub = mci.query("dataset == @ds").sort_values("spearman")
     err = np.vstack([sub.spearman - sub.ci_lo, sub.ci_hi - sub.spearman])
@@ -115,7 +115,7 @@ similarity_panel(ax_mm(79, yc, 42, 28), "BrSt24", "BrSt24 (360 pairs)")
 letter("c", 0.5, G["r2"])
 
 # ---------------------------------------------------------------- d: final-embedding heatmap
-cd = pd.read_csv(os.path.join(ROOT, "derivatives", "group", "fig1_distinctiveness_memorability.tsv"), sep="\t")
+cd = pd.read_csv(os.path.join(ROOT, "derivatives", "group", "fig1", "fig1_distinctiveness_memorability.tsv"), sep="\t")
 fin = cd.query("depth == 'final'")
 piv = fin.pivot(index="model", columns="score", values="spearman_rho").loc[MODELS, ["HIT", "FA"]]
 sig = fin.pivot(index="model", columns="score", values="sig_fdr_spearman").loc[MODELS, ["HIT", "FA"]]

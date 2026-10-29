@@ -38,8 +38,8 @@ python 2_analyze/figure_sources.py && python 3_plot/make_figures.py
 | 1 | `1_generate/item_memorability.py` | `behavior/online_trials.tsv` | `behavior/item_memorability.tsv` | Fig. 1b, ED Fig. 1 |
 | 1 | `1_generate/ann_features.py` | `stimuli/images/` | `derivatives/ann/` (features, distinctiveness, similarity) | Fig. 1c–e |
 | 1 | `1_generate/eeg_epochs.py` | raw EEG exports (`sourcedata/`, not deposited) | `derivatives/epochs/`, `participants.tsv` | all EEG |
-| 2 | `2_analyze/behavior.py` | item scores, online trials | `derivatives/group/behavior_stats.tsv` | Fig. 1b |
-| 2 | `2_analyze/ann.py` | `derivatives/ann/` | `derivatives/group/fig1_*.tsv` | Fig. 1c–e |
+| 2 | `2_analyze/behavior.py` | item scores, online trials | `derivatives/group/fig1/fig1_behavior_stats.tsv` | Fig. 1b |
+| 2 | `2_analyze/ann.py` | `derivatives/ann/` | `derivatives/group/fig1/` | Fig. 1c–e |
 | 2 | `2_analyze/decoding.py` | epochs | `derivatives/decoding/` | Figs 2, 4, 5a–d |
 | 2 | `2_analyze/rsa.py` | epochs | `derivatives/rsa/` | Figs 3, 5e–f |
 | 2 | `2_analyze/figure_sources.py` | decoding, RSA | `derivatives/group/fig2`–`fig5/` | Figs 2–5, ED Figs 2–3 |

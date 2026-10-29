@@ -4,7 +4,7 @@
   split-half reliability of z(H), z(FA), d' across participants (1,000 splits, Spearman-Brown corrected)
 
   python 2_analyze/behavior.py
-Output: derivatives/group/behavior_stats.tsv
+Output: derivatives/group/fig1/fig1_behavior_stats.tsv
 """
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -65,6 +65,6 @@ if __name__ == "__main__":
     rows += [dict(stat=f"split_half_r_{k}", value=r[k]) for k in r] + [dict(stat=f"reliability_SB_{k}", value=R[k]) for k in R]
     rows += [dict(stat=f"{c}_{f}", value=getattr(s[c], f)()) for c in ["zhit", "zfa", "dprime"] for f in ["mean", "std", "min", "max"]]
     rows += [dict(stat="n_participants", value=tr["sub"].nunique()), dict(stat="n_trials", value=len(tr))]
-    os.makedirs(C.GROUP, exist_ok=True)
-    out = pd.DataFrame(rows); out.to_csv(C.GROUP / "behavior_stats.tsv", sep="\t", index=False)
+    os.makedirs(C.GROUP / "fig1", exist_ok=True)
+    out = pd.DataFrame(rows); out.to_csv(C.GROUP / "fig1" / "fig1_behavior_stats.tsv", sep="\t", index=False)
     print(out.round(4).to_string(index=False))

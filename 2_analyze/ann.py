@@ -6,7 +6,7 @@
   d,e  distinctiveness x memorability: Pearson / Spearman per model x layer, permutation p (5,000), BH-FDR
 
   python 2_analyze/ann.py [--pics-trials PiCS_validation_trials.csv]   (osf.io/yvb8h; needed for panel c)
-Outputs: derivatives/group/fig1_similarity_benchmark.tsv, derivatives/group/fig1_distinctiveness_memorability.tsv
+Outputs: derivatives/group/fig1/fig1_similarity_benchmark.tsv, derivatives/group/fig1/fig1_distinctiveness_memorability.tsv
 """
 import argparse, os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -90,8 +90,8 @@ def distinctiveness_memorability():
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(); ap.add_argument("--pics-trials"); a = ap.parse_args()
-    os.makedirs(C.GROUP, exist_ok=True)
-    distinctiveness_memorability().to_csv(C.GROUP / "fig1_distinctiveness_memorability.tsv", sep="\t", index=False)
+    out = C.GROUP / "fig1"; os.makedirs(out, exist_ok=True)
+    distinctiveness_memorability().to_csv(out / "fig1_distinctiveness_memorability.tsv", sep="\t", index=False)
     if a.pics_trials:
-        similarity_benchmark(a.pics_trials).to_csv(C.GROUP / "fig1_similarity_benchmark.tsv", sep="\t", index=False)
-    print("done ->", C.GROUP)
+        similarity_benchmark(a.pics_trials).to_csv(out / "fig1_similarity_benchmark.tsv", sep="\t", index=False)
+    print("done ->", out)
