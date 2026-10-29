@@ -91,6 +91,7 @@ def verify(only=None):
         rows.append(dict(file=f, n_files=1, size_bytes=(OUT / f).stat().st_size, md5=hashlib.md5((OUT / f).read_bytes()).hexdigest()))
     new = pd.DataFrame(rows)
     allr = pd.concat([old[~old.file.isin(new.file)], new]).sort_values("file")
+    allr = allr.astype({"n_files": int, "size_bytes": int})
     allr.to_csv(ck, sep="\t", index=False)
     print(f"checksums.tsv: {len(allr)} files, {allr.size_bytes.sum() / 1e9:.2f} GB")
 
