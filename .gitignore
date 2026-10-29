@@ -1,0 +1,6 @@
+# Arial is licensed; scripts fall back to Liberation Sans
+3_plot/fonts/
+figures/
+__pycache__/
+*.pyc
+.DS_Store
