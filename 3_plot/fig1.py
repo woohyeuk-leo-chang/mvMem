@@ -87,7 +87,7 @@ letter("a", 0.5, G["r1"])
 df = pd.read_csv(os.path.join(ROOT, "behavior", "item_memorability.tsv"), sep="\t")
 h, f = df.zhit.values, df.zfa.values
 axB = ax_mm(181.5 - SB, G["r1"] + 2.5, SB, SB)              # square axes (equal physical x/y length)
-axB.scatter(f, h, s=1.2, alpha=.30, color="0.25", linewidths=0, rasterized=False)
+axB.scatter(f, h, s=3, alpha=.30, color="0.25", linewidths=0, rasterized=False)
 axB.set_xlabel("FA-ability, $z$(FA)"); axB.set_ylabel("H-ability, $z$(H)")
 axB.set_xticks([-2, -1.5, -1, -0.5, 0]); axB.set_yticks([0, .5, 1, 1.5, 2])
 letter("b", 181.5 - SB - 14.5, G["r1"])
