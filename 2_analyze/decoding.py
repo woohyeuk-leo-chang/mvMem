@@ -64,7 +64,7 @@ if __name__ == "__main__":
     ap.add_argument("--runs", nargs="*", default=["matrix", "dist"]); ap.add_argument("--sessions", type=int, nargs="*")
     ap.add_argument("--folds", type=int, default=C.DEC_FOLDS); ap.add_argument("--overwrite", action="store_true")
     a = ap.parse_args()
-    for sid, task in io.sessions():
+    for sid, task in io.sessions(require_epochs=True):
         if a.sessions and sid not in a.sessions:
             continue
         X, T = io.load_session(sid, task)

@@ -10,12 +10,20 @@ def participants():
     return pd.read_csv(C.DATA / "participants.tsv", sep="\t")
 
 
-def sessions(phase=None):
-    """Iterate (sid, experiment) over all sessions, optionally only those that recorded `phase`."""
+def sessions(phase=None, require_epochs=False):
+    """Iterate (sid, experiment) over all sessions, optionally only those that recorded `phase`.
+    require_epochs: skip sessions whose epochs are not on disk (e.g. only some eeg_epochs_<experiment>.zip unpacked)."""
     p = participants()
+    missing = set()
     for _, r in p.iterrows():
+        sid = int(r.participant_id.split("-")[1])
+        if require_epochs and not epochs_path(sid, r.experiment).exists():
+            missing.add(r.experiment)
+            continue
         if phase is None or phase in r.phases.split("+"):
-            yield int(r.participant_id.split("-")[1]), r.experiment
+            yield sid, r.experiment
+    if missing:
+        print(f"note: no epochs on disk for {sorted(missing)} -- those sessions were skipped")
 
 
 def _stem(sid, task):
