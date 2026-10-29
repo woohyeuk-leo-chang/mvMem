@@ -11,13 +11,15 @@ mvMem-code/
   2_analyze/       analysis-ready data -> per-session results -> group-level tables
   3_plot/          group-level tables -> figures (Nature format)
   tools/           build_data_package.py (one-off; how the deposit was assembled from the project folder)
+  data/            the data package (not tracked by git; see tools/data_README.md)
 ```
 
 ## Quick start
 
 ```bash
 conda env create -f environment.yml && conda activate mvmem
-export MVMEM_DATA=/path/to/mvMem-data            # the unzipped data package
+# unzip the data package into ./data (git-ignored), or point MVMEM_DATA at it:
+export MVMEM_DATA=/path/to/mvMem-data
 
 python 3_plot/make_figures.py                     # all figures from the deposited group-level tables (~1 min)
 python 2_analyze/figure_sources.py                # recompute those tables from the per-session results (~2 min)

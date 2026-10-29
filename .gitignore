@@ -1,6 +1,16 @@
+# data package (deposited on Zenodo, never committed)
+data/
+*.npy
+*.npz
+*.pkl
+*.fif
+
+# generated figures
+figures/
+
 # Arial is licensed; scripts fall back to Liberation Sans
 3_plot/fonts/
-figures/
+
 __pycache__/
 *.pyc
 .DS_Store

@@ -1,12 +1,12 @@
 """Paths and analysis constants shared by every script.
 
-Set MVMEM_DATA to the unpacked data package (default: ../mvMem-data next to this folder).
+Set MVMEM_DATA to the unpacked data package (default: ./data inside this repository; git-ignored).
 """
 import os
 from pathlib import Path
 
 CODE = Path(__file__).resolve().parent
-DATA = Path(os.environ.get("MVMEM_DATA", CODE.parent / "mvMem-data"))
+DATA = Path(os.environ.get("MVMEM_DATA", CODE / "data"))
 RAW = Path(os.environ.get("MVMEM_RAW", DATA / "sourcedata"))      # raw <id>_ALLDAT.csv per session (not deposited)
 STIM = DATA / "stimuli"                                           # 2,400 object images
 BEH = DATA / "behavior"                                           # online recognition task
