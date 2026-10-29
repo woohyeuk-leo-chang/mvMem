@@ -54,7 +54,8 @@ python 2_analyze/figure_sources.py && python 3_plot/make_figures.py
   (`participants.tsv` gives the experiment and original ID). E1–E3 recorded study and test phases, E4–E7 the study
   phase only and E8 the test phase only. Each session is treated as an independent unit.
 - **Labels.** H-ability, FA-ability and each model's distinctiveness are median-split (high/low) at the item level.
-- **Time grid.** 50-ms windows every 24 ms (500-Hz data; `int(25 // 2)` = 12 samples), centred at −176 … 760 ms.
+- **Time grid.** 50-ms windows with a 25-ms step parameter (the mvEEG defaults). With 500-Hz data the step is
+  `int(25 // 2)` = 12 samples, so the 40 window centres fall every 24 ms, from −176 to 760 ms.
 - **Decoding.** Logistic regression on 20-trial averages, 1,000 folds; within-phase runs use a disjoint stratified
   70/30 split; cross-phase runs train on one phase and test on the other. The plotted quantity is the hyperplane
   contrast (mean classifier score for low- minus high-level test averages).

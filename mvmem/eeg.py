@@ -12,7 +12,8 @@ LEVEL = {"high": 0, "low": 1}                     # class indices
 
 
 def time_bin(X):
-    """Average 50-ms windows every 24 ms (12 samples at 500 Hz). Returns (X_binned, window centres in ms)."""
+    """Average 50-ms windows with a 25-ms step parameter, as in mvEEG.Wrangler (12 samples at 500 Hz, so window
+    centres fall every 24 ms). Returns (X_binned, window centres in ms)."""
     times = np.arange(C.TMIN_MS, C.TMIN_MS + 2 * C.N_SAMPLES, 2)
     step = int(C.T_STEP // (times[1] - times[0]))
     t = times.astype(int)[step:-step:step]
